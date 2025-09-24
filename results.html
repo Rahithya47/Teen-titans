@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screening Results</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Mental Health Support</a>
+      <div>
+        <button class="btn btn-light me-2" onclick="retakeScreening()">Retake Screening</button>
+        <button class="btn btn-light" onclick="window.location.href='index.html'">Dashboard</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5">
+    <div class="p-4 bg-white shadow rounded" id="results"></div>
+  </div>
+
+  <script>
+    // Retake Screening function
+    function retakeScreening() {
+      localStorage.removeItem("screeningCompleted");
+      localStorage.removeItem("screeningScore");
+      localStorage.removeItem("screeningAnswers");
+      localStorage.removeItem("physicalSymptoms");
+      window.location.href = 'screening.html';
+    }
+
+    // Display results
+    if(localStorage.getItem("screeningCompleted") !== "true") {
+      document.getElementById("results").innerHTML = "<p>Please complete the screening first.</p>";
+    } else {
+      const answers = JSON.parse(localStorage.getItem("screeningAnswers"));
+      const physicalSymptoms = JSON.parse(localStorage.getItem("physicalSymptoms"));
+      const totalScore = parseInt(localStorage.getItem("screeningScore"));
+
+      let resultHTML = `<h2 class="text-center mb-3">Your Screening Results</h2>`;
+      resultHTML += `<h4>Total Stress Score: ${totalScore}</h4>`;
+
+      // Stress categories
+      const categories = {
+        "Family/Relationship": answers[4] + answers[5],
+        "Financial": answers[6] + answers[7],
+        "Work/Academic": answers[8] + answers[9],
+        "Social": answers[10] + answers[11],
+        "Health/Lifestyle": answers[12] + answers[13] + answers[14]
+      };
+
+      resultHTML += "<h5>Potential Stress Causes:</h5><ul>";
+      for(const [cat, score] of Object.entries(categories)) {
+        if(score >= 3) {
+          resultHTML += `<li>${cat} (Score: ${score})</li>`;
+        }
+      }
+      resultHTML += "</ul>";
+
+      if(physicalSymptoms.length > 0) {
+        resultHTML += "<h5>Physical Symptoms Observed:</h5><ul>";
+        physicalSymptoms.forEach(symptom => resultHTML += `<li>${symptom}</li>`);
+        resultHTML += "</ul>";
+      }
+
+      // Stress level with color
+      let stressLevel = "";
+      let stressColor = "";
+      if(totalScore <= 15) {
+        stressLevel = "Low stress"; stressColor = "green";
+      } else if(totalScore <= 30) {
+        stressLevel = "Moderate stress"; stressColor = "orange";
+      } else {
+        stressLevel = "High stress"; stressColor = "red";
+      }
+      resultHTML += `<h5>Overall Stress Level: <span style="color:${stressColor}">${stressLevel}</span></h5>`;
+
+      document.getElementById("results").innerHTML = resultHTML;
+    }
+  </script>
+
+</body>
+</html>

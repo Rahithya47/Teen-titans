@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources | InnerGlow</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Segoe UI',sans-serif; display:flex; background:#f0f2f5; }
+    .sidebar { width:70px; background:linear-gradient(to bottom,#6a11cb,#2575fc); color:white; height:100vh; position:fixed; top:0; left:0; padding-top:20px; display:flex; flex-direction:column; transition: width 0.3s; overflow:hidden; z-index:1000; }
+    .sidebar.expanded { width:250px; }
+    .sidebar h2 { font-size:1.6rem; text-align:center; margin-bottom:30px; font-weight:bold; opacity:0; transition:opacity 0.3s; }
+    .sidebar.expanded h2 { opacity:1; }
+    .sidebar a { color:white; text-decoration:none; padding:12px 20px; display:flex; align-items:center; font-weight:500; transition:all 0.3s; }
+    .sidebar a i { min-width:25px; font-size:1.2rem; }
+    .sidebar.expanded a span.label { display:inline; margin-left:12px; }
+    .sidebar a span.label { display:none; }
+    .sidebar a:hover { background: rgba(255,255,255,0.2); border-radius:10px; }
+    .logout-btn { margin-top:auto; background:#e74c3c; color:white; font-weight:bold; text-align:center; padding:12px; border-radius:8px; margin:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+    .main-content { margin-left:70px; padding:30px; width:calc(100% - 70px); transition: margin-left 0.3s; }
+    .sidebar.expanded ~ .main-content { margin-left:250px; width:calc(100% - 250px); }
+    .dashboard-icon { position:fixed; top:20px; left:10px; font-size:1.8rem; color:#fff; cursor:pointer; z-index:1100; transition:left 0.3s, color 0.3s; }
+    .sidebar.expanded ~ .dashboard-icon { left:260px; color:#6a11cb; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2>InnerGlow</h2>
+    <a href="index.html"><i class="fas fa-home"></i> <span class="label">Home</span></a>
+   <a href="about_me.html"><i class="fas fa-file-medical-alt"></i> <span class="label">about me</span></a>
+     <a href="screening.html"><i class="fas fa-file-medical-alt"></i> <span class="label">Screening</span></a>
+    <a href="track_progress.html"><i class="fas fa-chart-line"></i> <span class="label">Track Progress</span></a>
+    <a href="chat.html"><i class="fas fa-comments"></i> <span class="label">Chat</span></a>
+    <a href="appointments.html"><i class="fas fa-calendar-check"></i> <span class="label">Appointments</span></a>
+    <a href="resources.html" class="active"><i class="fas fa-book"></i> <span class="label">Resources</span></a>
+    <a href="peer_support.html"><i class="fas fa-users"></i> <span class="label">Peer Support</span></a>
+    <div class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span class="label">Logout</span></div>
+  </div>
+
+  <!-- Sidebar toggle button -->
+  <i class="fas fa-bars dashboard-icon" id="dashboardToggle"></i>
+
+  <!-- Main content -->
+  <div class="main-content">
+
+    <!-- ✅ Navigation bar like index page -->
+    <div id="authButtons" class="text-end mb-4">
+      <a href="login.html" class="btn btn-primary">Login</a>
+      <a href="register.html" class="btn btn-success">Register</a>
+    </div>
+
+    <h2>Wellness Resources</h2>
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Relaxation Audio</h5>
+            <audio controls class="w-100">
+              <source src="static/audio/relax.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Wellness Videos</h5>
+            <a href="https://www.youtube.com/results?search_query=stress+relief" target="_blank" class="btn btn-primary w-100">Watch</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Guides</h5>
+            <a href="static/docs/wellness_guide.pdf" class="btn btn-success w-100">Download</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const toggle = document.getElementById("dashboardToggle");
+    toggle.addEventListener("click", () => {
+      sidebar.classList.toggle("expanded");
+    });
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const authButtons = document.getElementById("authButtons");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if(user){
+      authButtons.style.display = "none";
+      logoutBtn.style.display = "flex";
+    }else{
+      logoutBtn.style.display = "none";
+    }
+
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("user");
+      location.href = "login.html";
+    });
+  </script>
+
+</body>
+</html>

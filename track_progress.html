@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InnerGlow | Track Progress</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; background: #f3e5f5; }
+    .sidebar { width: 70px; background: linear-gradient(to bottom, #6a11cb, #2575fc); color: white; height: 100vh; position: fixed; top: 0; left: 0; padding-top: 20px; display: flex; flex-direction: column; transition: width 0.3s; overflow: hidden; z-index: 1000; }
+    .sidebar.expanded { width: 250px; }
+    .sidebar h2 { font-size: 1.6rem; text-align: center; margin-bottom: 30px; font-weight: bold; opacity: 0; transition: opacity 0.3s; }
+    .sidebar.expanded h2 { opacity: 1; }
+    .sidebar a { color: white; text-decoration: none; padding: 12px 20px; display: flex; align-items: center; font-weight: 500; transition: all 0.3s; }
+    .sidebar a i { min-width: 25px; font-size: 1.2rem; }
+    .sidebar.expanded a span.label { display: inline; margin-left: 12px; }
+    .sidebar a span.label { display: none; }
+    .sidebar a:hover { background: rgba(255,255,255,0.2); border-radius: 10px; }
+    .logout-btn { margin-top: auto; background: #e74c3c; color: white; font-weight: bold; text-align: center; padding: 12px; border-radius: 8px; margin: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .sidebar.expanded .logout-btn { width: auto; }
+    .logout-btn:hover { background: #c0392b; }
+
+    .content { margin-left: 70px; padding: 40px 20px; width: calc(100% - 70px); transition: margin-left 0.3s; }
+    .sidebar.expanded ~ .content { margin-left: 250px; }
+
+    .dashboard-icon { position: fixed; top: 20px; left: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; z-index: 1100; transition: left 0.3s, color 0.3s; }
+    .sidebar.expanded ~ .dashboard-icon { left: 260px; color: #6a11cb; }
+
+    .card { border-radius: 15px; }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <h2>InnerGlow</h2>
+  <a href="index.html"><i class="fas fa-home"></i> <span class="label">Home</span></a>
+  <a href="about_me.html"><i class="fas fa-user"></i> <span class="label">About Me</span></a>
+  <a href="screening.html"><i class="fas fa-file-medical-alt"></i> <span class="label">Screening</span></a>
+  <a href="tracking.html"><i class="fas fa-chart-line"></i> <span class="label">Track Progress</span></a>
+  <a href="chat.html"><i class="fas fa-comments"></i> <span class="label">Chat</span></a>
+  <a href="appointments.html"><i class="fas fa-calendar-check"></i> <span class="label">Appointments</span></a>
+  <a href="resources.html"><i class="fas fa-book"></i> <span class="label">Resources</span></a>
+  <a href="peer_support.html"><i class="fas fa-users"></i> <span class="label">Peer Support</span></a>
+  <a href="admin.html"><i class="fas fa-user-shield"></i> <span class="label">Admin</span></a>
+  <div class="logout-btn"><i class="fas fa-sign-out-alt"></i> <span class="label">Logout</span></div>
+</div>
+
+<i class="fas fa-bars dashboard-icon" id="dashboardToggle"></i>
+
+<!-- Main Content -->
+<div class="content">
+  <div class="container mt-5">
+    <h2 class="text-center">📊 Your Mental Health Progress</h2>
+    <p class="text-center text-muted">Track how your screening scores improve over time.</p>
+
+    <!-- Chart Card -->
+    <div class="card p-4 shadow mb-4">
+      <canvas id="moodChart"></canvas>
+    </div>
+
+    <!-- Last Screening -->
+    <div class="card p-4 shadow">
+      <h4>Last Screening Summary</h4>
+      <ul>
+        <li><strong>Score:</strong> 12 (Moderate)</li>
+        <li><strong>Date:</strong> 12 Sept 2025</li>
+        <li><strong>Recommendation:</strong> Practice mindfulness, keep a journal, and consider speaking to a counselor.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Redirect if not logged in
+  if (!localStorage.getItem("isLoggedIn")) {
+    window.location.href = "login.html";
+  }
+
+  // Sidebar toggle
+  const sidebar = document.getElementById("sidebar");
+  document.getElementById("dashboardToggle").addEventListener("click", () => {
+    sidebar.classList.toggle("expanded");
+  });
+
+  // Chart.js
+  const ctx = document.getElementById('moodChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      datasets: [{
+        label: 'PHQ-9 Score',
+        data: [5, 8, 12, 10], // Example data
+        borderColor: '#6a11cb',
+        backgroundColor: 'rgba(106, 17, 203, 0.2)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      scales: { y: { beginAtZero: true, max: 27 } }
+    }
+  });
+</script>
+
+</body>
+</html>
